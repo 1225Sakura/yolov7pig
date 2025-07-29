@@ -158,19 +158,19 @@ wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
   - `results.csv`：包含了生成上述图表的原始数据，你可以用 Excel 或 Python 库（如 Pandas、Matplotlib）进行更详细的分析和绘图。
 - **典型训练过程可视化：**
 
-  ![训练结果曲线](runs/train/yolov7_pigs_run4/results.png)
+  ![训练结果曲线](photo/results.png)
 
 - **混淆矩阵与各类曲线：**
 
   | 混淆矩阵 | P 曲线 | R 曲线 | PR 曲线 | F1 曲线 |
   | :------: | :----: | :----: | :-----: | :-----: |
-  | ![混淆矩阵](runs/train/yolov7_pigs_run4/confusion_matrix.png) | ![P曲线](runs/train/yolov7_pigs_run4/P_curve.png) | ![R曲线](runs/train/yolov7_pigs_run4/R_curve.png) | ![PR曲线](runs/train/yolov7_pigs_run4/PR_curve.png) | ![F1曲线](runs/train/yolov7_pigs_run4/F1_curve.png) |
+  | ![混淆矩阵](photo/confusion_matrix.png) | ![P曲线](photo/P_curve.png) | ![R曲线](photo/R_curve.png) | ![PR曲线](photo/PR_curve.png) | ![F1曲线](photo/F1_curve.png) |
 
 - **部分训练/测试样本可视化：**
 
   | 训练样本 | 测试标签 | 测试预测 |
   | :------: | :------: | :------: |
-  | ![train_batch0](runs/train/yolov7_pigs_run4/train_batch0.jpg) | ![test_batch0_labels](runs/train/yolov7_pigs_run4/test_batch0_labels.jpg) | ![test_batch0_pred](runs/train/yolov7_pigs_run4/test_batch0_pred.jpg) |
+  | ![train_batch0](photo/train_batch0.jpg) | ![test_batch0_labels](photo/test_batch0_labels.jpg) | ![test_batch0_pred](photo/test_batch0_pred.jpg) |
 
 ---
 
