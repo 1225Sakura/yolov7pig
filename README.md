@@ -67,7 +67,8 @@ pip install -r requirements.txt
 
 1. **访问 Roboflow**：前往 Roboflow 官网并搜索 “Pig” 相关的公开数据集。
 2. **选择并下载**：找到一个合适的猪只数据集。在导出（Export）时，选择 “YOLOv7 PyTorch” 格式。
-3. > **通过网盘分享的文件：pig**
+3. **直接通过我的网盘下载**：
+   > **通过网盘分享的文件：pig**
    >
    > 链接: https://pan.baidu.com/s/17SQh6gXG9yGZMC2aTMkswA?pwd=ijcu  提取码: ijcu
    >
@@ -184,7 +185,12 @@ wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
 ## 5. 模型评估
 
 评估阶段使用验证集或测试集来检验 `best.pt` 模型的最终性能，不进行反向传播更新权重。
-
+**可以用已经训练好的模型评估比较**：
+   > **通过网盘分享的文件：pig**
+   >
+   > 链接: https://pan.baidu.com/s/17SQh6gXG9yGZMC2aTMkswA?pwd=ijcu  提取码: ijcu
+   >
+   > 该网盘内包含数据集 pig 压缩包。
 ### 5.1 评估代码
 
 使用 `test.py` 脚本进行评估：
