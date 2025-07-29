@@ -159,6 +159,7 @@ wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
 - **典型训练过程可视化：**
 
   ![训练结果曲线](photo/results.png)
+  > **说明：**由于本项目为单类别检测任务，Classification Loss（分类损失）在训练过程中始终为0或无值，这是YOLOv7在单类别下的正常表现。
 
 - **混淆矩阵与各类曲线：**
 
