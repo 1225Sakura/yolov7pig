@@ -10,16 +10,16 @@
 
 ### 1.1 技术栈
 
-- **模型算法**: YOLOv7
-- **深度学习框架**: PyTorch
-- **数据集平台**: Roboflow
-- **核心编程语言**: Python
+- **模型算法**：YOLOv7
+- **深度学习框架**：PyTorch
+- **数据集平台**：Roboflow
+- **核心编程语言**：Python
 
 ### 1.2 硬件与环境建议
 
-- **操作系统**: Linux (Ubuntu 18.04 或更高版本)
-- **GPU**: NVIDIA GPU（推荐 V100、RTX 30 系列、A100 等），显存不低于 16GB
-- **软件依赖**:
+- **操作系统**：Linux（Ubuntu 18.04 或更高版本）
+- **GPU**：NVIDIA GPU（推荐 V100、RTX 30 系列、A100 等），显存不低于 16GB
+- **软件依赖**：
   - CUDA 11.x
   - cuDNN 8.x
   - Python 3.8+
@@ -31,7 +31,7 @@
 
 ### 2.1 克隆 YOLOv7 官方代码库
 
-首先，从 GitHub 克隆 YOLOv7 的官方代码库，这是我们所有工作的基础。
+首先，从 GitHub 克隆 YOLOv7 的官方代码库，这是我们所有工作的基础：
 
 ```bash
 git clone https://github.com/WongKinYiu/yolov7.git
@@ -40,7 +40,7 @@ cd yolov7
 
 ### 2.2 创建并激活 Python 虚拟环境
 
-为了保持项目依赖的隔离，强烈建议使用 Conda 或 venv 创建虚拟环境。
+为了保持项目依赖的隔离，强烈建议使用 Conda 或 venv 创建虚拟环境：
 
 ```bash
 conda create -n yolov7-pigs python=3.8 -y
@@ -49,7 +49,7 @@ conda activate yolov7-pigs
 
 ### 2.3 安装所需的依赖包
 
-YOLOv7 项目提供了一个 `requirements.txt` 文件，包含了所有必需的 Python 库。
+YOLOv7 项目提供了一个 `requirements.txt` 文件，包含了所有必需的 Python 库：
 
 ```bash
 pip install -r requirements.txt
@@ -65,13 +65,33 @@ pip install -r requirements.txt
 
 ### 3.1 从 Roboflow 获取数据集
 
-1. **访问 Roboflow**：前往 Roboflow 官网并搜索 "Pig" 相关的公开数据集。
-2. **选择并下载**：找到一个合适的猪只数据集。在导出（Export）时，选择 "YOLOv7 PyTorch" 格式。这将生成一个包含 `train`、`valid`（或 `val`）和 `test` 文件夹的压缩包，每个文件夹下都有 `images` 和 `labels` 子文件夹，同时还会生成一个 `data.yaml` 文件。这种格式正是 YOLOv7 所需要的。
-3. **解压数据集**：下载后，将数据集解压到你的项目目录中。例如，可以解压到 `yolov7/data/` 路径下。
+1. **访问 Roboflow**：前往 Roboflow 官网并搜索 “Pig” 相关的公开数据集。
+2. **选择并下载**：找到一个合适的猪只数据集。在导出（Export）时，选择 “YOLOv7 PyTorch” 格式。
+3. **数据集结构**：下载后会得到一个压缩包，解压后目录结构如下：
+
+```
+数据集根目录/
+├── train/
+│   ├── images/
+│   └── labels/
+├── valid/ 或 val/
+│   ├── images/
+│   └── labels/
+├── test/（可选）
+│   ├── images/
+│   └── labels/
+└── data.yaml
+```
+
+- `images/`：存放图片文件
+- `labels/`：存放标签文件（YOLO 格式）
+- `data.yaml`：数据集配置文件
+
+4. **解压数据集**：下载后，将数据集解压到你的项目目录中，例如 `yolov7/data/` 路径下。
 
 ### 3.2 data.yaml 配置文件
 
-Roboflow 会自动为你生成一个 `data.yaml` 文件，这是连接你的数据集和 YOLOv7 训练脚本的关键。请检查并确保其内容正确，它应该看起来像这样：
+Roboflow 会自动为你生成一个 `data.yaml` 文件，这是连接你的数据集和 YOLOv7 训练脚本的关键。请检查并确保其内容正确，示例如下：
 
 ```yaml
 # train and val data as 1) directory: path/to/images/, 2) file: path/to/images.txt, or 3) list: [path/to/image1.jpg, path/to/image2.jpg, ...]
@@ -89,7 +109,7 @@ names: ['pig']
 
 - `train`：训练集图片的路径。
 - `val`：验证集图片的路径。
-- `nc`：数据集中的类别总数。对于本项目，只有 "pig" 一个类别，所以是 1。
+- `nc`：数据集中的类别总数。对于本项目，只有 “pig” 一个类别，所以是 1。
 - `names`：按顺序排列的类别名称列表。
 
 将此文件保存到 `yolov7/data/` 目录下，例如命名为 `pig_data.yaml`。
@@ -100,7 +120,7 @@ names: ['pig']
 
 ### 4.1 下载预训练权重
 
-为了加快收敛速度并提升模型性能，我们使用官方提供的预训练权重作为起点。
+为了加快收敛速度并提升模型性能，我们使用官方提供的预训练权重作为起点：
 
 ```bash
 cd yolov7
@@ -127,20 +147,30 @@ wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
 
 训练完成后，所有相关文件都会保存在 `runs/train/yolov7_pigs_run/` 目录下：
 
-- **模型 (weights/):**
+- **模型（weights/）：**
   - `best.pt`：在验证集上达到最佳 mAP 的模型权重。这是你后续评估和推理时应该使用的模型。
   - `last.pt`：最后一个 epoch 完成后的模型权重。
-- **折线图与曲率图 (results.png, results.csv):**
+- **折线图与曲率图（results.png，results.csv）：**
   - `results.png`：一张包含多种性能曲线的图表，直观展示了训练过程。
-    - Box Loss, Objectness Loss, Classification Loss：各项损失函数随 epoch 下降的情况。
+    - Box Loss、Objectness Loss、Classification Loss：各项损失函数随 epoch 下降的情况。
     - Precision（精确率）& Recall（召回率）：模型性能指标随 epoch 的变化。
     - mAP@0.5 & mAP@0.5:0.95：平均精度均值，是评估目标检测模型性能的核心指标。
-  - `results.csv`：包含了生成上述图表的原始数据，你可以用 Excel 或 Python 库（如 Pandas, Matplotlib）进行更详细的分析和绘图。
-- **其他图表：**
-  - `confusion_matrix.png`：混淆矩阵，展示了模型对于不同类别的分类准确性。
-  - `P_curve.png`, `R_curve.png`, `PR_curve.png`, `F1_curve.png`：分别是精确率、召回率、P-R 曲线和 F1 分数的曲线图。
+  - `results.csv`：包含了生成上述图表的原始数据，你可以用 Excel 或 Python 库（如 Pandas、Matplotlib）进行更详细的分析和绘图。
+- **典型训练过程可视化：**
 
-> !训练结果示例图
+  ![训练结果曲线](runs/train/yolov7_pigs_run4/results.png)
+
+- **混淆矩阵与各类曲线：**
+
+  | 混淆矩阵 | P 曲线 | R 曲线 | PR 曲线 | F1 曲线 |
+  | :------: | :----: | :----: | :-----: | :-----: |
+  | ![混淆矩阵](runs/train/yolov7_pigs_run4/confusion_matrix.png) | ![P曲线](runs/train/yolov7_pigs_run4/P_curve.png) | ![R曲线](runs/train/yolov7_pigs_run4/R_curve.png) | ![PR曲线](runs/train/yolov7_pigs_run4/PR_curve.png) | ![F1曲线](runs/train/yolov7_pigs_run4/F1_curve.png) |
+
+- **部分训练/测试样本可视化：**
+
+  | 训练样本 | 测试标签 | 测试预测 |
+  | :------: | :------: | :------: |
+  | ![train_batch0](runs/train/yolov7_pigs_run4/train_batch0.jpg) | ![test_batch0_labels](runs/train/yolov7_pigs_run4/test_batch0_labels.jpg) | ![test_batch0_pred](runs/train/yolov7_pigs_run4/test_batch0_pred.jpg) |
 
 ---
 
@@ -150,7 +180,7 @@ wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
 
 ### 5.1 评估代码
 
-使用 `test.py` 脚本进行评估。
+使用 `test.py` 脚本进行评估：
 
 ```bash
 python test.py \
@@ -178,7 +208,7 @@ python test.py \
 
 ### 6.1 推理代码
 
-使用 `detect.py` 脚本进行推理。
+使用 `detect.py` 脚本进行推理：
 
 ```bash
 python detect.py \
