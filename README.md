@@ -17,8 +17,8 @@
 
 ### 1.2 硬件与环境建议
 
-- **操作系统**：Linux（Ubuntu 18.04 或更高版本）
-- **GPU**：NVIDIA GPU（推荐 V100、RTX 30 系列、A100 等），显存不低于 16GB
+- **系统**：Linux（Ubuntu 18.04 或更高版本）/windows
+- **GPU**：NVIDIA GPU（推荐 V100、RTX 30 系列、A100 等），显存不低于 16GB/cpu
 - **软件依赖**：
   - CUDA 11.x
   - cuDNN 8.x
