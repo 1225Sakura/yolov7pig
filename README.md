@@ -1,84 +1,157 @@
-# 自己从0开始的基于YOLOv7的猪只目标识别模型技术文档
+# 基于YOLOv7的猪只目标识别模型技术文档
+
+本文档详细介绍了使用 YOLOv7 算法和 Roboflow 猪只数据集进行目标检测模型训练、评估和部署的全过程。
+
+---
 
 ## 1. 项目概述
-本项目旨在训练一个能够准确识别图像和视频中猪只的高性能目标检测模型。我们选用在速度和精度上均表现出色的YOLOv7算法，并利用Roboflow平台获取并格式化了猪只数据集。
+
+本项目旨在训练一个能够准确识别图像和视频中猪只的高性能目标检测模型。我们选用在速度和精度上均表现出色的 YOLOv7 算法，并利用 Roboflow 平台获取并格式化了猪只数据集。
 
 ### 1.1 技术栈
-- 模型算法: YOLOv7
-- 深度学习框架: PyTorch
-- 数据集平台: Roboflow
-- 核心编程语言: Python
+
+- **模型算法**: YOLOv7
+- **深度学习框架**: PyTorch
+- **数据集平台**: Roboflow
+- **核心编程语言**: Python
 
 ### 1.2 硬件与环境建议
-- 操作系统: Linux (Ubuntu 18.04 或更高版本)
-- GPU: NVIDIA GPU (推荐 V100, RTX 30系列, A100等)，显存不低于16GB
-- 软件依赖:
+
+- **操作系统**: Linux (Ubuntu 18.04 或更高版本)
+- **GPU**: NVIDIA GPU（推荐 V100、RTX 30 系列、A100 等），显存不低于 16GB
+- **软件依赖**:
   - CUDA 11.x
   - cuDNN 8.x
   - Python 3.8+
   - Git
 
+---
+
 ## 2. 环境搭建与项目准备
 
-### 2.1 克隆YOLOv7官方代码库
+### 2.1 克隆 YOLOv7 官方代码库
+
+首先，从 GitHub 克隆 YOLOv7 的官方代码库，这是我们所有工作的基础。
+
 ```bash
 git clone https://github.com/WongKinYiu/yolov7.git
 cd yolov7
 ```
 
-### 2.2 创建并激活Python虚拟环境
+### 2.2 创建并激活 Python 虚拟环境
+
+为了保持项目依赖的隔离，强烈建议使用 Conda 或 venv 创建虚拟环境。
+
 ```bash
 conda create -n yolov7-pigs python=3.8 -y
 conda activate yolov7-pigs
 ```
 
 ### 2.3 安装所需的依赖包
+
+YOLOv7 项目提供了一个 `requirements.txt` 文件，包含了所有必需的 Python 库。
+
 ```bash
 pip install -r requirements.txt
 ```
-> 注意: 请确保你的PyTorch版本与你的CUDA版本相匹配。如果安装缓慢或出错，可以考虑使用国内镜像源。
+
+> **注意**：请确保你的 PyTorch 版本与你的 CUDA 版本相匹配。如果安装缓慢或出错，可以考虑使用国内镜像源。
+
+---
 
 ## 3. 数据集准备
 
-### 3.1 从Roboflow获取数据集
-1. 访问 Roboflow 官网并搜索 "Pig" 相关的公开数据集。
-2. 选择并下载，导出格式选择 "YOLOv7 PyTorch"。
-3. 解压到 `yolov7/data/` 目录下。
+本项目使用的数据集来自于 Roboflow，它是一个强大的数据集管理和增强工具。
+
+### 3.1 从 Roboflow 获取数据集
+
+1. **访问 Roboflow**：前往 Roboflow 官网并搜索 "Pig" 相关的公开数据集。
+2. **选择并下载**：找到一个合适的猪只数据集。在导出（Export）时，选择 "YOLOv7 PyTorch" 格式。这将生成一个包含 `train`、`valid`（或 `val`）和 `test` 文件夹的压缩包，每个文件夹下都有 `images` 和 `labels` 子文件夹，同时还会生成一个 `data.yaml` 文件。这种格式正是 YOLOv7 所需要的。
+3. **解压数据集**：下载后，将数据集解压到你的项目目录中。例如，可以解压到 `yolov7/data/` 路径下。
 
 ### 3.2 data.yaml 配置文件
+
+Roboflow 会自动为你生成一个 `data.yaml` 文件，这是连接你的数据集和 YOLOv7 训练脚本的关键。请检查并确保其内容正确，它应该看起来像这样：
+
 ```yaml
+# train and val data as 1) directory: path/to/images/, 2) file: path/to/images.txt, or 3) list: [path/to/image1.jpg, path/to/image2.jpg, ...]
 train: ../data/pigs_dataset/train/images
 val: ../data/pigs_dataset/valid/images
+
+# number of classes
 nc: 1
+
+# class names
 names: ['pig']
 ```
-- train: 训练集图片路径
-- val: 验证集图片路径
-- nc: 类别总数
-- names: 类别名称列表
+
+**重要参数说明：**
+
+- `train`：训练集图片的路径。
+- `val`：验证集图片的路径。
+- `nc`：数据集中的类别总数。对于本项目，只有 "pig" 一个类别，所以是 1。
+- `names`：按顺序排列的类别名称列表。
+
+将此文件保存到 `yolov7/data/` 目录下，例如命名为 `pig_data.yaml`。
+
+---
 
 ## 4. 模型训练
 
 ### 4.1 下载预训练权重
+
+为了加快收敛速度并提升模型性能，我们使用官方提供的预训练权重作为起点。
+
 ```bash
 cd yolov7
 wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
 ```
-- --weights: 初始权重文件路径
-- --data: 数据集配置文件路径
-- --cfg: 模型配置文件
-- --img-size: 输入图像尺寸
-- --batch-size: 批次大小
-- --epochs: 训练轮数
-- --device: GPU编号或cpu
-- --name: 实验名称
-- --hyp: 超参数文件路径
 
-训练过程会在终端显示每个epoch的进度，包括损失和评估指标（mAP）。
+这会下载一个在 COCO 数据集上预训练好的模型权重 `yolov7.pt`。
+
+#### 参数详解
+
+- `--weights`：初始权重文件路径。
+- `--data`：你的数据集配置文件（.yaml）的路径。
+- `--cfg`：模型的配置文件，定义了模型的结构。`yolov7.yaml` 是标准 YOLOv7 的配置。
+- `--img-size`：输入网络图像的尺寸，通常是 32 的倍数，如 640。
+- `--batch-size`：每批次送入 GPU 的图片数量。根据你的 GPU 显存大小进行调整。
+- `--epochs`：训练的总轮数。
+- `--device`：使用的 GPU 设备编号，0 代表第一块 GPU。如果用 CPU 训练，则指定 `cpu`。
+- `--name`：本次训练的实验名称。所有结果将保存在 `runs/train/yolov7_pigs_run` 目录下。
+- `--hyp`：超参数文件路径，用于调整学习率、数据增强等。
+
+训练过程开始后，你会在终端看到每个 epoch 的进度，包括损失函数值和评估指标（mAP）。
+
+### 4.3 训练结果与模型文件
+
+训练完成后，所有相关文件都会保存在 `runs/train/yolov7_pigs_run/` 目录下：
+
+- **模型 (weights/):**
+  - `best.pt`：在验证集上达到最佳 mAP 的模型权重。这是你后续评估和推理时应该使用的模型。
+  - `last.pt`：最后一个 epoch 完成后的模型权重。
+- **折线图与曲率图 (results.png, results.csv):**
+  - `results.png`：一张包含多种性能曲线的图表，直观展示了训练过程。
+    - Box Loss, Objectness Loss, Classification Loss：各项损失函数随 epoch 下降的情况。
+    - Precision（精确率）& Recall（召回率）：模型性能指标随 epoch 的变化。
+    - mAP@0.5 & mAP@0.5:0.95：平均精度均值，是评估目标检测模型性能的核心指标。
+  - `results.csv`：包含了生成上述图表的原始数据，你可以用 Excel 或 Python 库（如 Pandas, Matplotlib）进行更详细的分析和绘图。
+- **其他图表：**
+  - `confusion_matrix.png`：混淆矩阵，展示了模型对于不同类别的分类准确性。
+  - `P_curve.png`, `R_curve.png`, `PR_curve.png`, `F1_curve.png`：分别是精确率、召回率、P-R 曲线和 F1 分数的曲线图。
+
+> !训练结果示例图
+
+---
 
 ## 5. 模型评估
 
-使用 `test.py` 进行评估：
+评估阶段使用验证集或测试集来检验 `best.pt` 模型的最终性能，不进行反向传播更新权重。
+
+### 5.1 评估代码
+
+使用 `test.py` 脚本进行评估。
+
 ```bash
 python test.py \
   --weights runs/train/yolov7_pigs_run/weights/best.pt \
@@ -87,11 +160,26 @@ python test.py \
   --img-size 640 \
   --device 0
 ```
-评估结果会保存在 `runs/testexp` 目录。
+
+#### 参数说明
+
+- `--weights`：指向你训练好的最佳模型权重。
+- `--data`：仍然是你的数据集配置文件。
+- `--task`：指定任务是 `val`（验证）还是 `test`（测试）。
+- `--img-size`：评估时使用的图像尺寸，应与训练时一致。
+
+评估完成后，终端会打印出非常详细的指标，包括在 val 或 test 集上的 mAP、Precision、Recall 等。结果会保存在一个新的 `runs/testexp` 目录中。
+
+---
 
 ## 6. 模型推理
 
-使用 `detect.py` 进行推理：
+推理是使用训练好的模型在新的、未见过的图像或视频上进行目标检测。
+
+### 6.1 推理代码
+
+使用 `detect.py` 脚本进行推理。
+
 ```bash
 python detect.py \
   --weights runs/train/yolov7_pigs_run/weights/best.pt \
@@ -101,6 +189,18 @@ python detect.py \
   --iou-thres 0.5 \
   --device 0
 ```
-推理结果保存在 `runs/detect/exp` 目录。
 
----
+#### 参数说明
+
+- `--weights`：指向你训练好的最佳模型权重。
+- `--source`：需要进行检测的源文件。可以是：
+  - 单张图片路径：`data/samples/pig1.jpg`
+  - 整个图片文件夹路径：`data/pig_test_images/`
+  - 视频文件路径：`data/videos/pigfarm.mp4`
+  - 网络摄像头：`0`
+- `--conf-thres`：置信度阈值。只有当模型预测的置信度高于此值时，才会显示边界框。
+- `--iou-thres`：交并比（IoU）阈值，用于非极大值抑制（NMS）。
+
+### 6.2 推理结果
+
+推理结果（带有标注框的图片或视频）将保存在 `runs/detect/exp` 目录下。
