@@ -67,7 +67,13 @@ pip install -r requirements.txt
 
 1. **访问 Roboflow**：前往 Roboflow 官网并搜索 “Pig” 相关的公开数据集。
 2. **选择并下载**：找到一个合适的猪只数据集。在导出（Export）时，选择 “YOLOv7 PyTorch” 格式。
-3. **数据集结构**：下载后会得到一个压缩包，解压后目录结构如下：
+3. > **通过网盘分享的文件：pig**
+   >
+   > 链接: https://pan.baidu.com/s/17SQh6gXG9yGZMC2aTMkswA?pwd=ijcu  提取码: ijcu
+   >
+   > 该网盘内包含数据集 pig 压缩包。
+
+4. **数据集结构**：下载后会得到一个压缩包，解压后目录结构如下：
 
 ```
 数据集根目录/
