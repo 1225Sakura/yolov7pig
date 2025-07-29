@@ -136,6 +136,25 @@ wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
 
 这会下载一个在 COCO 数据集上预训练好的模型权重 `yolov7.pt`。
 
+### 4.2. 训练代码
+
+YOLOv7的训练通过train.py脚本来执行。你需要指定几个关键参数。
+
+训练命令示例:
+
+```bash
+python train.py \
+--weights yolov7.pt \
+--data data/pig_data.yaml \
+--cfg cfg/training/yolov7.yaml \
+--img-size 640 \
+--batch-size 16 \
+--epochs 100 \
+--device 0 \
+--name yolov7_pigs_run \
+--hyp data/hyp.scratch.p5.yaml
+```
+
 #### 参数详解
 
 - `--weights`：初始权重文件路径。
