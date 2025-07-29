@@ -190,7 +190,7 @@ wget https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt
    >
    > 链接: https://pan.baidu.com/s/17SQh6gXG9yGZMC2aTMkswA?pwd=ijcu  提取码: ijcu
    >
-   > 该网盘内包含数据集 pig 压缩包。
+   > 该网盘内包含模型文件mod压缩包。
 ### 5.1 评估代码
 
 使用 `test.py` 脚本进行评估：
