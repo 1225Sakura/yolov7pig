@@ -102,8 +102,8 @@ Roboflow 会自动为你生成一个 `data.yaml` 文件，这是连接你的数�
 
 ```yaml
 # train and val data as 1) directory: path/to/images/, 2) file: path/to/images.txt, or 3) list: [path/to/image1.jpg, path/to/image2.jpg, ...]
-train: ../data/pigs_dataset/train/images
-val: ../data/pigs_dataset/valid/images
+train: ../data/train/images
+val: ../data/val/images
 
 # number of classes
 nc: 1
